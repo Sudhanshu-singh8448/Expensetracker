@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { sql } from "./src/config/db.js";
 import job from "./config/cron.js";
+import { rateLimiter } from "./middleware/rateLimiter.js";
 
 dotenv.config();
 
@@ -19,6 +20,9 @@ if (process.env.NODE_ENV === "production") job.start();
 
 app.use(cors());
 app.use(express.json());
+
+// Apply rate limiting to all API routes
+app.use("/api", rateLimiter);
 
 const PORT = process.env.PORT || 3001;
 
